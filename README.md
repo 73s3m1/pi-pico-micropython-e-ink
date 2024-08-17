@@ -1,6 +1,6 @@
 # Raspberry Pi Pico W Examples for Inky Frame
 
-The below examples provide mini applications for the Inky_Frame device which can be found under [Getting Started with Inky Frame](). This repository is based on the examples given by Pimoroni Ltd.
+The below examples provide mini applications for the Inky_Frame device which can be found under [Getting Started with Inky Frame](https://learn.pimoroni.com/article/getting-started-with-inky-frame). This repository is based on the examples given by Pimoroni Ltd.
 
 ## Instructions
 
