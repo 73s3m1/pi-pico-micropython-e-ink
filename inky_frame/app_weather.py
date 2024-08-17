@@ -2,10 +2,6 @@
     This app shows currenty weather information.
     
     The weather data is retrieved by OpenWeather API.
-    
-    Please make sure to fill out the config.py with your API Key.
-    
-    Do not store your API Key directly in this file.
 """
 
 import jpegdec

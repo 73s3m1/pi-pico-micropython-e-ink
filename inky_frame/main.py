@@ -142,7 +142,6 @@ def handle_button_press(button, state_key):
     Returns:
     - None
     """
-    # All possible application states.
     app_states = {
         'A': "app_nasa",
         'B': "app_pictures",
@@ -162,7 +161,7 @@ def initalize(graphics, width, height):
     Shows an initialization screen before showing the launcher and in between loading an app.
 
     Parameters:
-    - width: The display width
+    - width: The display width.
     - height: The display height.
 
     Returns:
@@ -216,11 +215,11 @@ ih.clear_button_leds()
 
 # Check if json state file exists.
 if ih.file_exists("state.json"):
-    # Loads the JSON and launches the app
+    # Loads the JSON and launches the app.
     sh.load_state()
     sh.launch_app(sh.state['run'])
 
-    # Passes the the graphics object from the launcher to the app
+    # Passes the the graphics object from the launcher to the app.
     sh.app.graphics = graphics
     sh.app.WIDTH = WIDTH
     sh.app.HEIGHT = HEIGHT
@@ -234,7 +233,7 @@ try:
 except ImportError:
     print("Please fill out config.py in your WiFi credentials.")
 
-# Get some memory back, we really need it!
+# Collect some memory back.
 gc.collect()
 
 # Get the selected state from state.json file.

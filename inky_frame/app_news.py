@@ -1,3 +1,9 @@
+"""
+    This script is based on an example application from Pimoroni.
+    
+    You can find these examples under https://learn.pimoroni.com/article/getting-started-with-inky-frame.
+"""
+
 from urllib import urequest
 import gc
 import qrcode

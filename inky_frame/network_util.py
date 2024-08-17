@@ -4,6 +4,8 @@
     This script provides functionality to control an Inky Frame, including managing network connectivity,
     LED control, and real-time clock (RTC) operations. The main features include controlling LEDs with PWM,
     connecting to Wi-Fi, handling sleep mode, and checking file existence.
+    
+    This script is based on an example from the getting started guide under https://learn.pimoroni.com/article/getting-started-with-inky-frame.
 
     Functions:
         - network_led(brightness): Sets the brightness of the network LED with gamma correction.
