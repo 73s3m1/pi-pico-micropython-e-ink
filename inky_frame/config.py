@@ -9,3 +9,7 @@ CITY_ID = "2935517"
 LAT=51.49
 # Longitude for the selected city.
 LON=7.45
+# Language for the weather API.
+LANG="de"
+# Unit used for temperature, quanitities or time.
+UNIT="metric"
