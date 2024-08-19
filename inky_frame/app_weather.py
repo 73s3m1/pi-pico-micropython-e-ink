@@ -129,11 +129,11 @@ def fetch_weather(city_id, lang, api_key, unit):
         name = data['name']
         temp = data['main']['temp']
         feels = data['main']['feels_like']
-        weather_description = data['weather'][0]['description']
+        description = data['weather'][0]['description']
         icon = data['weather'][0]['icon']
         humidity = data['main']['humidity']
 
-        return name, temp, feels, weather_description, icon, humidity
+        return name, temp, feels, description, icon, humidity
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         return None, None, None, None, None, None
@@ -161,7 +161,7 @@ def fetch_forecast(lat, lon, api_key, unit):
 
         for forecast in forecast_list:
             temp = forecast['main']['temp']
-            weather_description = forecast['weather'][0]['description']
+            description = forecast['weather'][0]['description']
             icon = forecast['weather'][0]['icon']
             humidity = forecast['main']['humidity']
             wind_speed = forecast['wind']['speed']
@@ -175,7 +175,7 @@ def fetch_forecast(lat, lon, api_key, unit):
             # Store the extracted data in a dictionary.
             forecast_data.append({
                 'temp': temp,
-                'description': weather_description,
+                'description': description,
                 'icon': icon,
                 'humidity': humidity,
                 'wind_speed': wind_speed,
