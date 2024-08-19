@@ -39,7 +39,7 @@ import gc
 import app_state as sh
 
 from machine import Pin, SPI, ADC
-from config import API_KEY, LAT, LON, LANG, UNIT
+from config import API_KEY, LOCATION_NAME, LAT, LON, LANG, UNIT
 
 # The default update interval for this app in minutes.
 UPDATE_INTERVAL = 30
@@ -276,7 +276,7 @@ def do_update():
     graphics.set_font("bitmap8")
 
     # Display the weather information.
-    graphics.text(f"{name}, Heute", 10, 10, scale=4)
+    graphics.text(f"{LOCATION_NAME}, Heute", 10, 10, scale=4)
     graphics.text(f"Fühlt sich an wie {feels}", 10, 140)
     graphics.text(f"{description}", 10, 160)
     graphics.text(f"Die Luftfeuchtigkeit liegt bei {humidity}%", 10, 180)
