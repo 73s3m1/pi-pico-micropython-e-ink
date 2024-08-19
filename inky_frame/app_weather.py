@@ -223,13 +223,13 @@ def get_temperature_color(temp_celsius):
         tuple: RGB color corresponding to the temperature.
     """
     # Blue for cold temperatures.
-    cold_color = (0, 0, 255)
+    cold_color = (120, 160, 255)
     
     # Red for warm temperatures.
     warm_color = (255, 0, 0)
 
     min_temp = 0
-    max_temp = 35
+    max_temp = 30
 
     return interpolate_color(min_temp, max_temp, temp_celsius, cold_color, warm_color)
 
