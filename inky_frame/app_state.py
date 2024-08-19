@@ -27,6 +27,8 @@
 import time
 import os
 import json
+import micropython
+import gc
 
 # Global variable that stores the state of the application.
 state = {"run": None}
@@ -122,6 +124,16 @@ def launch_app(app_name):
     """
     global app
     try:
+        # Show memory info before import.
+        micropython.mem_info()
+        
+        # Perform garbage collection before importing to free up memory.
+        # We want to make sure to clean up the memory before loading our app.
+        gc.collect()
+        
+        # Show memory info before import.
+        micropython.mem_info()
+        
         # Import the application module.
         app = __import__(app_name)
         

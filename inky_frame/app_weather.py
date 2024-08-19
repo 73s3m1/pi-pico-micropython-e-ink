@@ -40,7 +40,7 @@ import gc
 import app_state as sh
 
 from machine import Pin, SPI, ADC
-from config import API_KEY, CITY_ID, LAT, LON
+from config import API_KEY, CITY_ID, LAT, LON, LANG, UNIT
 
 # The default update interval for this app in minutes.
 UPDATE_INTERVAL = 30
@@ -109,7 +109,7 @@ def fetch_internal_temperature():
         print(f"Error fetching temperature data: {e}")
         return None
 
-def fetch_weather():
+def fetch_weather(city_id, lang, api_key, units):
     """
     Fetches current weather data from OpenWeather API.
 
@@ -118,7 +118,7 @@ def fetch_weather():
     """
     try:
         # Fixed weather URL from openweathermap.
-        url = f"http://api.openweathermap.org/data/2.5/weather?id={CITY_ID}&lang=de&appid={API_KEY}&units=metric"
+        url = f"http://api.openweathermap.org/data/2.5/weather?id={city_id}&lang={lang}&appid={api_key}&units={unit}"
         
         # Send GET request to the weather API.
         response = urequests.get(url)
@@ -138,7 +138,7 @@ def fetch_weather():
         print(f"Error fetching weather data: {e}")
         return None, None, None, None, None, None
 
-def fetch_forecast():
+def fetch_forecast(lat, lon, api_key, unit):
     """
     Fetches a 3-point weather forecast from the OpenWeather API for the next 3 intervals (3 hour, 6 hour and 9 hour forecast).
 
@@ -146,8 +146,9 @@ def fetch_forecast():
         list: A list of dictionaries containing forecast data.
     """
     try:
-        # Fixed weather URL from OpenWeatherMap API.
-        url = f"http://api.openweathermap.org/data/2.5/forecast?lat={LAT}&lon={LON}&cnt=3&appid={API_KEY}&units=metric"
+        # The following URL is used for the weather forecast on the botton of the screen (limited to 3 data points).
+        # The amount of data points is therefore limited to 3, this prevents an out of memory message for retriving to much data at a time.        
+        url = f"http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&cnt=3&appid={api_key}&units={unit}"
         
         # Send GET request to the forecast API.
         response = urequests.get(url)
