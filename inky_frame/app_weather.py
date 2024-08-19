@@ -1,7 +1,34 @@
 """
-    This app shows currenty weather information.
+    Weather Display Application for Raspberry Pi Pico W.
+
+    This application fetches and displays current weather information 
+    and a short-term weather forecast using the OpenWeather API.
+
+    Dependencies:
+    - jpegdec
+    - sdcard
+    - urequests
+    - inky_frame
+
+    Hardware Setup:
+    - SD card for storing status icons
+    - Inky Frame display for showing weather information
+
+    Configuration:
+    - API_KEY: Your OpenWeather API key.
+    - CITY_ID: City ID for fetching current weather.
+    - LAT, LON: Latitude and longitude for fetching weather forecast.
     
-    The weather data is retrieved by OpenWeather API.
+    Usage:
+    In order to use this app you need to create an openweathermap API account.
+    Additionally, you need to ensure you have an active Wifi-Connection, please provide your Wifi details in your config.py file.
+    This account needs to be specified within the config.py configuration file.
+    Please make also sure to provide the status folder to the root of the Raspberry Pi Pico W.
+    
+    The LAT and LON are used for the weather forecast in the bottom of the screen.
+    The CITY_ID is used for the current weather output in the top of the screen.
+    You can use Google maps to retrive your local LAT and LON.
+    If you decide to choose a LAT, LON that do not match up to the CITY_ID, the botton screen will show a different area then the top of the screen.
 """
 
 import jpegdec
@@ -18,10 +45,10 @@ from config import API_KEY, CITY_ID, LAT, LON
 # The default update interval for this app in minutes.
 UPDATE_INTERVAL = 30
 
-# Initialize objects.
+# Initialize global variables.
 graphics = None
 
-# Try to mount the SD card.
+# Initialize SD card SPI and try to mount it.
 sd_spi = SPI(0, sck=Pin(18, Pin.OUT), mosi=Pin(19, Pin.OUT), miso=Pin(16, Pin.OUT))
 sd = sdcard.SDCard(sd_spi, Pin(22))
 
@@ -29,32 +56,40 @@ try:
     os.mount(sd, "/sd")
 except Exception as e:
     print(f"Error mounting SD card: {e}")
-    
     sd = None
 
-# Method to update images files from the SD card and handling errors.
 def update():
-    # Check if SD card is mounted.
+    """
+    Main update function to fetch and display weather data.
+    Handles SD card mounting and error handling.
+    """
     if sd is None: 
         print("SD card not mounted.")
         return
     
-    # Turn on busy light.
+    # Turn on busy light indicator.
     inky_frame.led_busy.on()
     
     print("Update weather information...")
     
-    # Try to update, handle any error and make sure to disable LED.
     try:
         do_update()
     except Exception as e:
         print(f"Error displaying weather information: {e}")
     finally:
+        # Ensure the busy light is turned off.
         inky_frame.led_busy.off()
 
-# Fetch internal temperatur from Raspberry Pi Pico W (see https://electrocredible.com/raspberry-pi-pico-temperature-sensor-tutorial/)
 def fetch_internal_temperature():
-    # Create an ADC instance to read the voltage from the fifth channel.
+    """
+    Fetches the internal temperature of the Raspberry Pi Pico W. Keep in mind that the internal temperature reading might be off.
+    
+    Further information can be found under https://electrocredible.com/raspberry-pi-pico-temperature-sensor-tutorial/.
+    More information for the calculation can be found under  https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf.
+    
+    Returns:
+        float: The temperature in Celsius.
+    """
     adc = ADC(4)
     
     try:
@@ -74,10 +109,15 @@ def fetch_internal_temperature():
         print(f"Error fetching temperature data: {e}")
         return None
 
-# Method to fetch weather information.
 def fetch_weather():
+    """
+    Fetches current weather data from OpenWeather API.
+
+    Returns:
+        tuple: Weather data (name, temp, feels_like, description, icon, humidity).
+    """
     try:
-        # Weather URL from openweathermap.
+        # Fixed weather URL from openweathermap.
         url = f"http://api.openweathermap.org/data/2.5/weather?id={CITY_ID}&lang=de&appid={API_KEY}&units=metric"
         
         # Send GET request to the weather API.
@@ -92,20 +132,24 @@ def fetch_weather():
         weather_description = data['weather'][0]['description']
         icon = data['weather'][0]['icon']
         humidity = data['main']['humidity']
-        
-        # Return the extracted data.
+
         return name, temp, feels, weather_description, icon, humidity
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         return None, None, None, None, None, None
 
-# Method to fetch the weather forecast
 def fetch_forecast():
+    """
+    Fetches a 3-point weather forecast from the OpenWeather API for the next 3 intervals (3 hour, 6 hour and 9 hour forecast).
+
+    Returns:
+        list: A list of dictionaries containing forecast data.
+    """
     try:
-        # Weather URL from OpenWeatherMap API
+        # Fixed weather URL from OpenWeatherMap API.
         url = f"http://api.openweathermap.org/data/2.5/forecast?lat={LAT}&lon={LON}&cnt=3&appid={API_KEY}&units=metric"
         
-        # Send GET request to the forecast API
+        # Send GET request to the forecast API.
         response = urequests.get(url)
         data = response.json()
         response.close()
@@ -142,10 +186,23 @@ def fetch_forecast():
         
         return forecast_data
     except Exception as e:
-        print(f"Error fetching weather data: {e}")
+        print(f"Error fetching weather forecast data: {e}")
         return []
 
 def interpolate_color(min_temp, max_temp, current_temp, color1, color2):
+    """
+    Interpolates between two colors based on the current temperature.
+
+    Args:
+        min_temp (float): Minimum temperature for interpolation.
+        max_temp (float): Maximum temperature for interpolation.
+        current_temp (float): Current temperature.
+        color1 (tuple): RGB color for the minimum temperature.
+        color2 (tuple): RGB color for the maximum temperature.
+
+    Returns:
+        tuple: Interpolated RGB color.
+    """
     ratio = (current_temp - min_temp) / (max_temp - min_temp)
     ratio = max(0, min(1, ratio))
     
@@ -156,6 +213,15 @@ def interpolate_color(min_temp, max_temp, current_temp, color1, color2):
     return (r, g, b)
 
 def get_temperature_color(temp_celsius):
+    """
+    Determines the display color based on the current temperature.
+
+    Args:
+        temp_celsius (float): Temperature in Celsius.
+
+    Returns:
+        tuple: RGB color corresponding to the temperature.
+    """
     cold_color = (0, 0, 255)
     warm_color = (255, 165, 0)
     
@@ -166,6 +232,10 @@ def get_temperature_color(temp_celsius):
 
 # Method that updates the images files from the SD card.
 def do_update():
+    """
+    Fetches and displays weather information on the Inky Frame display.
+    Handles errors, SD card access, and memory management.
+    """
     name, temp, feels, description, icon, humidity = fetch_weather()
     
     if temp is None:
@@ -253,7 +323,9 @@ def do_update():
         gc.collect()
 
 def draw():
-    # Display the result.
+    """
+    Displays the final graphics on the Inky Frame display.
+    """
     if graphics is not None:
         graphics.update()
     
