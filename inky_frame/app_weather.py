@@ -16,8 +16,9 @@
 
     Configuration:
     - API_KEY: Your OpenWeather API key.
-    - CITY_ID: City ID for fetching current weather.
     - LAT, LON: Latitude and longitude for fetching weather forecast.
+    - LANG: Language setting for weather API.
+    - UNIT: The unit used for the weather API (metric, imperial, etc.).
 
     Usage:
     In order to use this app you need to create an openweathermap API account.
@@ -25,10 +26,8 @@
     This account needs to be specified within the config.py configuration file.
     Please make also sure to provide the status folder to the root of the Raspberry Pi Pico W.
 
-    The LAT and LON are used for the weather forecast in the bottom of the screen.
-    The CITY_ID is used for the current weather output in the top of the screen.
+    The LAT and LON are used for the weather forecast and the current weather.
     You can use Google maps to retrive your local LAT and LON.
-    If you decide to choose a LAT, LON that do not match up to the CITY_ID, the botton screen will show a different area then the top of the screen.
 """
 
 import jpegdec
@@ -40,7 +39,7 @@ import gc
 import app_state as sh
 
 from machine import Pin, SPI, ADC
-from config import API_KEY, CITY_ID, LAT, LON, LANG, UNIT
+from config import API_KEY, LAT, LON, LANG, UNIT
 
 # The default update interval for this app in minutes.
 UPDATE_INTERVAL = 30
@@ -109,7 +108,7 @@ def fetch_internal_temperature():
         print(f"Error fetching temperature data: {e}")
         return None
 
-def fetch_weather(city_id, lang, api_key, unit):
+def fetch_weather(lat, lon, lang, api_key, unit):
     """
     Fetches current weather data from OpenWeather API.
 
@@ -118,7 +117,7 @@ def fetch_weather(city_id, lang, api_key, unit):
     """
     try:
         # Fixed weather URL from openweathermap.
-        url = f"http://api.openweathermap.org/data/2.5/weather?id={city_id}&lang={lang}&appid={api_key}&units={unit}"
+        url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&lang={lang}&appid={api_key}&units={unit}"
 
         # Send GET request to the weather API.
         response = urequests.get(url)
@@ -223,8 +222,11 @@ def get_temperature_color(temp_celsius):
     Returns:
         tuple: RGB color corresponding to the temperature.
     """
+    # Blue for cold temperatures.
     cold_color = (0, 0, 255)
-    warm_color = (255, 165, 0)
+    
+    # Red for warm temperatures.
+    warm_color = (255, 0, 0)
 
     min_temp = 0
     max_temp = 35
@@ -237,7 +239,7 @@ def do_update():
     Fetches and displays weather information on the Inky Frame display.
     Handles errors, SD card access, and memory management.
     """
-    name, temp, feels, description, icon, humidity = fetch_weather(CITY_ID, LANG, API_KEY, UNIT)
+    name, temp, feels, description, icon, humidity = fetch_weather(LAT, LON, LANG, API_KEY, UNIT)
 
     if temp is None:
         print("Failed to retrieve weather data.")
