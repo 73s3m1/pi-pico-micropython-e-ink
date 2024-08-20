@@ -201,18 +201,10 @@ def get_temperature_color(temp_celsius):
     Returns:
         tuple: RGB color corresponding to the temperature.
     """
-    # Blue for cold temperatures.
-    cold_color = (120, 160, 255)
-    
-    intermediate_color = (30, 30, 30)
-    
-    # Red for warm temperatures.
-    warm_color = (255, 0, 0)
-
-    min_temp = 0
-    max_temp = 30
-
-    return interpolate_color(min_temp, max_temp, temp_celsius, cold_color, warm_color)
+    if(temp_celsius < 18):
+        return interpolate_color(0, 18, temp_celsius, (120, 160, 255), (255, 160, 0))
+    else:
+        return interpolate_color(20, 30, temp_celsius, (255, 160, 0), (255, 0, 0))
 
 def do_update():
     """
