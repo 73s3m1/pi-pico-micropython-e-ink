@@ -37,8 +37,8 @@ state = {"run": None}
 app = None
 
 # Define day and night time intervals (24 h time interval).
-DAY_START = 8
-DAY_END = 23
+DAY_START = const(8)
+DAY_END = const(23)
 
 def get_app_update_interval(day_update_interval, night_update_interval):
     """

@@ -6,13 +6,8 @@
 
     Dependencies:
     - jpegdec
-    - sdcard
     - urequests
     - inky_frame
-
-    Hardware Setup:
-    - SD card for storing status icons
-    - Inky Frame display for showing weather information
 
     Configuration:
     - API_KEY: Your OpenWeather API key.
@@ -31,7 +26,6 @@
 """
 
 import jpegdec
-import sdcard
 import os
 import inky_frame
 import urequests
@@ -47,25 +41,10 @@ UPDATE_INTERVAL = 30
 # Initialize global variables.
 graphics = None
 
-# Initialize SD card SPI and try to mount it.
-sd_spi = SPI(0, sck=Pin(18, Pin.OUT), mosi=Pin(19, Pin.OUT), miso=Pin(16, Pin.OUT))
-sd = sdcard.SDCard(sd_spi, Pin(22))
-
-try:
-    os.mount(sd, "/sd")
-except Exception as e:
-    print(f"Error mounting SD card: {e}")
-    sd = None
-
 def update():
     """
     Main update function to fetch and display weather data.
-    Handles SD card mounting and error handling.
     """
-    if sd is None:
-        print("SD card not mounted.")
-        return
-
     # Turn on busy light indicator.
     inky_frame.led_busy.on()
 
@@ -233,11 +212,9 @@ def get_temperature_color(temp_celsius):
 
     return interpolate_color(min_temp, max_temp, temp_celsius, cold_color, warm_color)
 
-# Method that updates the images files from the SD card.
 def do_update():
     """
     Fetches and displays weather information on the Inky Frame display.
-    Handles errors, SD card access, and memory management.
     """
     name, temp, feels, description, icon, humidity = fetch_weather(LAT, LON, LANG, API_KEY, UNIT)
 
