@@ -204,6 +204,8 @@ def get_temperature_color(temp_celsius):
     # Blue for cold temperatures.
     cold_color = (120, 160, 255)
     
+    intermediate_color = (30, 30, 30)
+    
     # Red for warm temperatures.
     warm_color = (255, 0, 0)
 
@@ -239,7 +241,7 @@ def do_update():
         jpeg = jpegdec.JPEG(graphics)
 
         jpeg.open_file("/status/" + icon + ".jpg")
-        jpeg.decode(WIDTH - 240, 0)
+        jpeg.decode(WIDTH - 240, 0, jpegdec.JPEG_SCALE_FULL, dither=True)
     except OSError:
         print("Failed to retrieve status icon.")
 
@@ -310,4 +312,4 @@ def draw():
         graphics.update()
 
     # Set next update interval.
-    UPDATE_INTERVAL = sh.get_app_update_interval(10, 120)
+    UPDATE_INTERVAL = sh.get_app_update_interval(30, 120)

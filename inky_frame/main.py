@@ -10,6 +10,7 @@ import jpegdec
 import gc
 import time
 import network_util as ih
+import inky_frame
 import app_state as sh
 
 from machine import reset
@@ -29,16 +30,6 @@ WIDTH, HEIGHT = graphics.get_bounds()
 # Turn any LEDs off that may still be on from last run.
 ih.clear_button_leds()
 ih.led_warn.off()
-
-# Define all available colors for the e-ink screen.
-BLACK = 0
-WHITE = 1
-GREEN = 2
-BLUE = 3
-RED = 4
-YELLOW = 5
-ORANGE = 6
-TAUPE = 7
 
 def draw_option(text, x, y, width, height, text_size):
     """
