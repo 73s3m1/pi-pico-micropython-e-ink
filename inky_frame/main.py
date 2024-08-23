@@ -18,6 +18,16 @@ from machine import reset
 # For importing PicoGraphics we need to specify the size of the Inky Frame (in this case 5.7").
 from picographics import PicoGraphics, DISPLAY_INKY_FRAME as DISPLAY
 
+# Define all available colors for the e-ink screen.
+BLACK = 0
+WHITE = 1
+GREEN = 2
+BLUE = 3
+RED = 4
+YELLOW = 5
+ORANGE = 6
+TAUPE = 7
+
 # Next we need a short delay to give USB a chance to initialise.
 time.sleep(0.5)
 

@@ -20,7 +20,7 @@ UPDATE_INTERVAL = 480
 
 # Constants for cache file and endpoint.
 FILENAME = "/sd/xkcd-daily.jpg"
-ENDPOINT = "https://github.com/73s3m1/pi-pico-micropython-e-ink/blob/main/image/xkcd/xkcd-daily.jpg?raw=true"
+ENDPOINT = "https://raw.githubusercontent.com/73s3m1/pi-pico-micropython-e-ink/49cd304de0ef0ac50105d273ebb9779f1e7b0ff2/image/xkcd/xkcd-daily.jpg"
 
 print("Load app for daily XKCD message.")
 
