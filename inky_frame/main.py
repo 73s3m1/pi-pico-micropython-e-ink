@@ -110,7 +110,7 @@ def draw_launcher_menu():
         ("B. Pictures", 30, HEIGHT - (280 + y_offset), WIDTH - 150, 50, 3),
         ("C. Weather", 30, HEIGHT - (220 + y_offset), WIDTH - 200, 50, 3),
         ("D. Headlines", 30, HEIGHT - (160 + y_offset), WIDTH - 250, 50, 3),
-        ("E. -XKCD", 30, HEIGHT - (100 + y_offset), WIDTH - 300, 50, 3),
+        ("E. XKCD", 30, HEIGHT - (100 + y_offset), WIDTH - 300, 50, 3),
     ]
     
     for option in options:
