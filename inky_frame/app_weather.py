@@ -247,13 +247,13 @@ def do_update():
     graphics.set_font("bitmap8")
 
     # Display the weather information.
-    graphics.text(f"{LOCATION_NAME}, Heute", 10, 10, scale=4)
-    graphics.text(f"Fühlt sich an wie {feels}", 10, 140)
-    graphics.text(f"{description}", 10, 160)
-    graphics.text(f"Die Luftfeuchtigkeit liegt bei {humidity}%", 10, 180)
+    graphics.text(f"{LOCATION_NAME}, Heute", 30, 30, scale=4)
+    graphics.text(f"Fühlt sich an wie {feels}", 30, 160)
+    graphics.text(f"{description}", 30, 180)
+    graphics.text(f"Die Luftfeuchtigkeit liegt bei {humidity}%", 30, 200)
 
     if int_temp_c is not None:
-        graphics.text(f"Raumtemparatur: {int_temp_c:.2f} C", 10, 200)
+        graphics.text(f"Raumtemparatur: {int_temp_c:.2f} C", 30, 220)
 
     # Get some memory back, we really need it!
     gc.collect()
@@ -263,7 +263,7 @@ def do_update():
 
     graphics.set_pen(graphics.create_pen(color[0], color[1], color[2]))
 
-    graphics.text(f"{temp}°C", 10, 60, scale=8)
+    graphics.text(f"{temp}°C", 30, 80, scale=8)
 
     # Set pen back to black.
     graphics.set_pen(0)
